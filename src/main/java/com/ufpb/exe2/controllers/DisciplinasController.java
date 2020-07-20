@@ -3,11 +3,14 @@ package com.ufpb.exe2.controllers;
 import java.util.List;
 import java.util.Optional;
 
+import com.ufpb.exe2.DTO.CommentsDTO;
+import com.ufpb.exe2.DTO.GradeADTO;
+import com.ufpb.exe2.DTO.LikesDTO;
+import com.ufpb.exe2.DTO.SingleNumberDTO;
+import com.ufpb.exe2.DTO.SingleStrDTO;
+import com.ufpb.exe2.DTO.StartingDTO;
+
 import com.ufpb.exe2.entities.Disciplina;
-import com.ufpb.exe2.entities.DisciplinaComent;
-import com.ufpb.exe2.entities.DisciplinaGet;
-import com.ufpb.exe2.entities.DisciplinaLikes;
-import com.ufpb.exe2.entities.DisciplinaShort;
 import com.ufpb.exe2.services.DisciplinasService;
 
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -45,9 +48,9 @@ public class DisciplinasController {
     }
 
     @GetMapping("/disciplinas")
-    public ResponseEntity< List<DisciplinaGet> > getDisciplinas(){
+    public ResponseEntity< List<StartingDTO> > getDisciplinas() {
         try{
-            return new ResponseEntity< List<DisciplinaGet> >(
+            return new ResponseEntity< List<StartingDTO> >(
             ds.getDisciplinas(),
             HttpStatus.OK
         );
@@ -75,12 +78,12 @@ public class DisciplinasController {
     }
 
     @PutMapping("/disciplinas/likes/{id}")
-    public ResponseEntity<DisciplinaLikes> incrementLikesById(
+    public ResponseEntity<LikesDTO> incrementLikesById(
         @PathVariable("id") Long id
     ){
         Optional<Disciplina>disciplina = ds.getDisciplinaById(id);
         if(disciplina.isPresent()){
-            return new ResponseEntity<DisciplinaLikes>(
+            return new ResponseEntity<LikesDTO>(
                 ds.incrementLikesById(id),
                 HttpStatus.OK
             );
@@ -89,14 +92,14 @@ public class DisciplinasController {
     }
 
     @PutMapping("/disciplinas/nota/{id}")
-    public ResponseEntity<DisciplinaShort> mediaNotas(
+    public ResponseEntity<GradeADTO> mediaNotas(
         @PathVariable("id") Long id,
-        @RequestBody double nota
+        @RequestBody SingleNumberDTO nota
     ){
         Optional<Disciplina>disciplina = ds.getDisciplinaById(id);
         if(disciplina.isPresent()){
-            return new ResponseEntity<DisciplinaShort>(
-                ds.addNota(id, nota),
+            return new ResponseEntity<GradeADTO>(
+                ds.addNota(id, nota.getNota()),
                 HttpStatus.OK
             );
         }
@@ -104,15 +107,15 @@ public class DisciplinasController {
     }
 
     @PutMapping("/disciplinas/comentarios/{id}")
-    public ResponseEntity<DisciplinaComent> addComentario(
+    public ResponseEntity<CommentsDTO> addComentario(
         @PathVariable("id") Long id,
-        @RequestBody String comentario
+        @RequestBody SingleStrDTO comentario
     ){
         Optional<Disciplina> disciplina = ds.getDisciplinaById(id);
 
         if(disciplina.isPresent()){
-            return new ResponseEntity<DisciplinaComent>(
-                ds.addComentario(id, comentario), 
+            return new ResponseEntity<CommentsDTO>(
+                ds.addComentario(id, comentario.getComentario()), 
                 HttpStatus.OK
             );
         }
