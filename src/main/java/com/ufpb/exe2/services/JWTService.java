@@ -6,7 +6,6 @@ import java.util.Optional;
 import javax.servlet.ServletException;
 
 import com.ufpb.exe2.filter.TokenFilter;
-import com.ufpb.exe2.repositories.UsuariosRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +20,6 @@ import com.ufpb.exe2.entities.Usuario;
 @Service
 public class JWTService {
     @Autowired
-    private UsuariosRepository ur;
     private UsuariosService us;
     private final String TOKEN_KEY = "login variance";
 
@@ -86,8 +84,8 @@ public class JWTService {
 
     public LoginResponse autentica(UsuarioLoginDTO usuario){
         String msgErro = "Usuario e/ou senha invalido(s). Login nao realizado";
-        Optional<Usuario> optionalUsuario = ur
-            .findByEmail(
+        Optional<Usuario> optionalUsuario = us
+            .getUsuario(
                 usuario.getEmail()
             );
         
