@@ -2,7 +2,7 @@ package com.ufpb.exe2.controllers;
 
 import javax.servlet.ServletException;
 
-import com.ufpb.exe2.entities.Usuario;
+import com.ufpb.exe2.DTO.UsuarioLoginDTO;
 import com.ufpb.exe2.services.JWTService;
 import com.ufpb.exe2.services.LoginResponse;
 
@@ -23,10 +23,10 @@ public class LoginController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> autentica(
-        @RequestBody Usuario usuario
+        @RequestBody UsuarioLoginDTO usuario
     ) throws ServletException{
-        
-        return new ResponseEntity<>(
+
+        return new ResponseEntity<LoginResponse>(
             jwtService.autentica(usuario),
             HttpStatus.OK
         );

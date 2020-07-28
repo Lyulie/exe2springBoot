@@ -6,24 +6,24 @@ import java.util.Optional;
 import javax.servlet.ServletException;
 
 import com.ufpb.exe2.filter.TokenFilter;
+import com.ufpb.exe2.repositories.UsuariosRepository;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 
+import com.ufpb.exe2.DTO.UsuarioLoginDTO;
 import com.ufpb.exe2.entities.Usuario;
 
 @Service
 public class JWTService {
+    @Autowired
+    private UsuariosRepository ur;
     private UsuariosService us;
     private final String TOKEN_KEY = "login variance";
-    
-    // public JWTService(DisciplinasService ds){
-    //     super();
-    //     this.us = us;
-    // }
 
     public boolean usuarioExiste (
         String authorizationHeader
@@ -83,17 +83,26 @@ public class JWTService {
             ).compact();
     }
 
-    public LoginResponse autentica(Usuario usuario){
-        /*resolver \/ \/ */
-        if (!UsuariosService.validaUsuarioSenha(usuario)){
-            
+
+    public LoginResponse autentica(UsuarioLoginDTO usuario){
+        String msgErro = "Usuario e/ou senha invalido(s). Login nao realizado";
+        Optional<Usuario> optionalUsuario = ur
+            .findByEmail(
+                usuario.getEmail()
+            );
+        
+        if (
+            optionalUsuario.isPresent() && 
+            usuario.getSenha().equals(
+                optionalUsuario.get().getSenha()
+            )
+        ){
             return new LoginResponse(
-                "Usuário ou senha inválidos. Não foi realizado o login."
+                geraToken(usuario.getEmail())
             );
         }
 
-        String token = geraToken(usuario.getEmail());
-        return new LoginResponse(token);
-    }
-    
+        return new LoginResponse(msgErro);
+
+	}
 }

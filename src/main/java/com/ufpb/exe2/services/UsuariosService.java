@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import javax.servlet.ServletException;
 
+import com.ufpb.exe2.DTO.UsuarioLoginDTO;
 import com.ufpb.exe2.entities.Usuario;
 import com.ufpb.exe2.repositories.UsuariosRepository;
 
@@ -35,7 +36,7 @@ public class UsuariosService {
         throw new ServletException("Usuário não encontrado");
     }
 
-    public boolean validaUsuarioSenha(Usuario usuario){
+    public boolean validaUsuarioSenha(UsuarioLoginDTO usuario){
         Optional<Usuario> optionalUsuario =  usuariosDAO
             .findByEmail(usuario.getEmail());
         
